@@ -1,0 +1,35 @@
+FROM localhost/rhel7/rocker/r-ver
+
+RUN yum -y install \
+    sudo \
+#    gdebi-core \
+    pandoc \
+    pandoc-citeproc \
+#    libcurl4-gnutls-dev \
+#    libcairo2-dev \
+    libXt-devel \
+#    xtail \
+    wget \
+  && Rscript --verbose -e 'install.packages(c("shiny", "rmarkdown", "devtools", "RJDBC"), repos="http://cran.us.r-project.org")' \
+  && wget https://download3.rstudio.org/centos6.3/x86_64/shiny-server-1.5.9.923-x86_64.rpm \
+  && yum -y install shiny-server-1.5.9.923-x86_64.rpm \
+  && rm -f shiny-server-1.5.9.923-x86_64.rpm \
+  && yum clean all \
+  && rm -rf /var/cache/yum
+
+# Download and install shiny server
+#RUN wget --no-verbose https://download3.rstudio.org/ubuntu-14.04/x86_64/VERSION -O "version.txt" && \
+#    VERSION=$(cat version.txt)  && \
+#    wget --no-verbose "https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-$VERSION-amd64.deb" -O ss-latest.deb && \
+#    gdebi -n ss-latest.deb && \
+#    rm -f version.txt ss-latest.deb && \
+#    . /etc/environment && \
+#    R -e "install.packages(c('shiny', 'rmarkdown'), repos='$MRAN')" && \
+#    cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/ && \
+#    chown shiny:shiny /var/lib/shiny-server
+
+EXPOSE 3838
+
+#COPY shiny-server.sh /usr/bin/shiny-server.sh
+CMD ["/opt/shiny-server/bin/shiny-server >> /var/log/shiny-server.log 2>&1"]
+#CMD ["/usr/bin/shiny-server.sh"]

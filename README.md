@@ -17,6 +17,12 @@ To run a temporary container with Shiny Server:
 docker run --rm -p 3838:3838 rocker/shiny
 ```
 
+Make sure to mount your app directory into the container:
+
+```sh
+docker run --rm -p 3838:3838 -v `pwd`/app:/srv/shiny-server rocker/shiny
+```
+
 To get specific version of R with your shiny image (e.g. 3.4.4):
 
 
